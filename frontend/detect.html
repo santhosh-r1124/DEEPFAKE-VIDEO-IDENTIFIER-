@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NOXIS — Upload a video for deepfake forensic analysis">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/detect.css">
+    <link rel="stylesheet" href="css/complaint.css">
+</head>
+
+<body>
+    <div class="grid-bg"></div>
+    <div class="scanlines"></div>
+
+    <main class="detect-page">
+        <div class="container">
+
+            <!-- Top Bar -->
+            <header class="topbar">
+                <a href="index.html" class="topbar-brand">
+                    <img src="logo.png" alt="NOXIS" class="topbar-logo" onerror="this.src='logo.jpg'">
+                    <span class="topbar-name">NOXIS</span>
+                </a>
+                <div class="topbar-status">
+                    <span class="status-dot"></span>
+                    <span>SYSTEM ONLINE</span>
+                </div>
+            </header>
+
+            <!-- Upload Section -->
+            <section id="uploadSection">
+                <div class="upload-zone glass" id="uploadZone">
+                    <div class="upload-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                    </div>
+                    <p class="upload-title">Drop video file here or click to browse</p>
+                    <p class="upload-subtitle">MP4, AVI, MOV, MKV, WebM &mdash; Max 200 MB</p>
+                    <input type="file" id="fileInput" class="upload-input" accept="video/*">
+                </div>
+
+                <div class="file-info" id="fileInfo">
+                    <div class="file-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="23 7 16 12 23 17 23 7" />
+                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                        </svg>
+                    </div>
+                    <div class="file-details">
+                        <p class="file-name" id="fileName">&mdash;</p>
+                        <p class="file-size" id="fileSize">&mdash;</p>
+                    </div>
+                    <button class="file-remove" id="fileRemove" title="Remove file">&times;</button>
+                </div>
+
+                <div class="error-banner" id="errorBanner">
+                    <span class="error-banner-text" id="errorText"></span>
+                    <button class="error-banner-close" id="errorClose">&times;</button>
+                </div>
+
+                <div class="scan-section" id="scanSection" style="display:none;">
+                    <button class="btn-primary" id="scanBtn">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        Press for Detailed Scan
+                    </button>
+                </div>
+            </section>
+
+            <!-- Analysis Overlay -->
+            <section class="analysis-overlay glass" id="analysisOverlay">
+                <div class="scanner-loader active" id="scannerLoader">
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="core"></div>
+                </div>
+                <p class="analysis-status" id="analysisStatus">Initializing analysis&hellip;</p>
+                <div class="analysis-progress-track">
+                    <div class="analysis-progress-fill" id="analysisProgress"></div>
+                </div>
+            </section>
+
+            <!-- Results Panel -->
+            <section class="results-panel" id="resultsPanel">
+                <div class="results-header" id="resultsHeader">
+                    <div class="verdict-section">
+                        <span class="verdict-label" id="verdictLabel">&mdash;</span>
+                        <span class="badge badge-neutral" id="verdictBadge">&mdash;</span>
+                    </div>
+                    <span class="confidence-value" id="confidenceValue">&mdash;</span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card glass">
+                        <p class="stat-label">Prediction</p>
+                        <p class="stat-value" id="statPrediction">&mdash;</p>
+                    </div>
+                    <div class="stat-card glass">
+                        <p class="stat-label">Confidence</p>
+                        <p class="stat-value" id="statConfidence">&mdash;</p>
+                    </div>
+                    <div class="stat-card glass">
+                        <p class="stat-label">Probability</p>
+                        <p class="stat-value" id="statProbability">&mdash;</p>
+                    </div>
+                    <div class="stat-card glass">
+                        <p class="stat-label">Inference</p>
+                        <p class="stat-value" id="statTime">&mdash;</p>
+                    </div>
+                </div>
+
+                <div class="probability-section glass">
+                    <div class="prob-header">
+                        <span class="prob-label-item real">&bull; Authentic</span>
+                        <span class="prob-label-item fake">&bull; Manipulated</span>
+                    </div>
+                    <div class="prob-bar">
+                        <div class="fill" id="probFill"></div>
+                    </div>
+                    <p class="prob-percentage" id="probPercentage">&mdash;</p>
+                </div>
+
+                <!-- ══ Frame-Level Analysis ══════════════════════════ -->
+                <div class="frame-analysis-section glass" id="frameSection" style="display:none;">
+                    <div class="frame-analysis-header">
+                        <div class="section-title">
+                            <span class="gradcam-title-dot"></span>
+                            Frame-Level Analysis
+                        </div>
+                        <div class="frame-counter" id="frameCounter">Frame 1 / 32</div>
+                    </div>
+
+                    <div class="frame-viewer">
+                        <div class="frame-display">
+                            <img src="" alt="Grad-CAM Heatmap" id="frameImage" class="frame-display-img">
+                            <div class="frame-badge" id="frameBadge">REAL</div>
+                        </div>
+                        <div class="frame-info-panel">
+                            <div class="frame-prob-display">
+                                <span class="frame-prob-label">Manipulation Probability</span>
+                                <span class="frame-prob-value" id="frameProbValue">0.00%</span>
+                            </div>
+                            <div class="frame-prob-bar">
+                                <div class="frame-prob-fill" id="frameProbFill"></div>
+                            </div>
+                            <p class="frame-verdict" id="frameVerdict">Authentic</p>
+                        </div>
+                    </div>
+
+                    <div class="frame-slider-area">
+                        <input type="range" min="0" max="31" value="0" class="frame-slider" id="frameSlider">
+                        <div class="frame-ticks" id="frameTicks"></div>
+                    </div>
+
+                    <div class="frame-minimap" id="frameMinimap"></div>
+                </div>
+
+                <!-- ══ Grad-CAM Gallery (legacy scroll) ══════════════ -->
+                <div class="gradcam-section" id="gradcamSection" style="display:none;">
+                    <div class="gradcam-title">
+                        <span class="gradcam-title-dot"></span>
+                        Grad-CAM Attention Maps
+                    </div>
+                    <div class="gradcam-track" id="gradcamTrack"></div>
+                </div>
+
+                <div class="new-scan-section">
+                    <button class="btn-ghost" id="newScanBtn">&#x21bb; New Scan</button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">&times;</button>
+        <img src="" alt="Grad-CAM enlarged" id="lightboxImg">
+    </div>
+
+    <!-- Complaint FAB -->
+    <button class="complaint-fab" id="complaintFab" title="Report Issue or Threat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+    </button>
+
+    <!-- Complaint Modal -->
+    <div class="complaint-modal-overlay" id="complaintModal">
+        <div class="complaint-modal glass">
+            <button class="complaint-close" id="complaintClose">&times;</button>
+            <h2 class="complaint-title">Report an Issue or Threat</h2>
+            <div class="complaint-contact-info">
+                Facing an issue on the website?<br>
+                Feel free to contact: <a href="mailto:santhosh.r2k4@gmail.com">santhosh.r2k4@gmail.com</a>
+            </div>
+
+            <p class="complaint-desc">
+                If you are facing threats by an anonymous source using your face, please raise a complaint below.
+                Upload the video evidence and a screenshot of the chat threatening you.
+            </p>
+
+            <form id="complaintForm" class="complaint-form">
+                <div class="form-group">
+                    <label>Complaint Details</label>
+                    <textarea rows="4" placeholder="Describe the threat or issue in detail..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Threatening Video Attachment (evidence)</label>
+                    <input type="file" accept="video/*" required>
+                </div>
+                <div class="form-group">
+                    <label>Screenshot of Threatening Chat</label>
+                    <input type="file" accept="image/*" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Submit Complaint</button>
+            </form>
+            <div id="complaintSuccess"
+                style="display:none; color: var(--green); margin-top: 15px; text-align: center; font-weight: bold;">
+                Complaint successfully registered. We will look into it.
+            </div>
+        </div>
+    </div>
+
+    <script src="js/cyberpunk.js"></script>
+    <script src="js/detect.js"></script>
+    <script src="js/complaint.js"></script>
+</body>
+
+</html>

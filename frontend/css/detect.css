@@ -1,0 +1,805 @@
+/*  ═══════════════════════════════════════════════════════════
+    NOXIS — Detection Page v2.1 — With Frame Slider
+    ═══════════════════════════════════════════════════════════ */
+
+.detect-page {
+    min-height: 100vh;
+    padding: 24px 0;
+    position: relative;
+    z-index: 2;
+}
+
+/* ── Top Bar ─────────────────────────────────────────────── */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+}
+
+.topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.topbar-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-border);
+    object-fit: contain;
+    background: var(--bg-2);
+}
+
+.topbar-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-0);
+}
+
+.topbar-status {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--green);
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+}
+
+/* ── Upload Zone ─────────────────────────────────────────── */
+.upload-zone {
+    border: 1.5px dashed rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    padding: 56px 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--speed) var(--ease);
+    background: var(--bg-1);
+}
+
+.upload-zone:hover,
+.upload-zone.dragover {
+    border-color: var(--accent-border);
+    background: rgba(139, 92, 246, 0.03);
+}
+
+.upload-icon {
+    margin-bottom: 16px;
+}
+
+.upload-icon svg {
+    width: 40px;
+    height: 40px;
+    stroke: var(--text-2);
+    opacity: 0.6;
+    transition: opacity var(--speed);
+}
+
+.upload-zone:hover .upload-icon svg {
+    opacity: 1;
+    stroke: var(--accent);
+}
+
+.upload-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-1);
+    margin-bottom: 6px;
+}
+
+.upload-subtitle {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-3);
+}
+
+.upload-input {
+    display: none;
+}
+
+/* ── File Info ────────────────────────────────────────────── */
+.file-info {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-top: 16px;
+    background: var(--bg-2);
+}
+
+.file-info.visible {
+    display: flex;
+}
+
+.file-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.file-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--accent);
+}
+
+.file-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.file-name {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-0);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-size {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-2);
+    margin-top: 2px;
+}
+
+.file-remove {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: all var(--speed);
+}
+
+.file-remove:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.scan-section {
+    text-align: center;
+    margin-top: 24px;
+}
+
+/* ── Analysis Overlay ────────────────────────────────────── */
+.analysis-overlay {
+    display: none;
+    text-align: center;
+    padding: 56px 20px;
+}
+
+.analysis-overlay.active {
+    display: block;
+}
+
+.analysis-status {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+    margin-top: 20px;
+    letter-spacing: 0.5px;
+}
+
+.analysis-progress-track {
+    width: 100%;
+    max-width: 320px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 1px;
+    margin: 16px auto 0;
+    overflow: hidden;
+}
+
+.analysis-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 1px;
+    width: 0%;
+    transition: width 0.3s linear;
+}
+
+/* ── Results Panel ───────────────────────────────────────── */
+.results-panel {
+    display: none;
+    margin-top: 32px;
+}
+
+.results-panel.visible {
+    display: block;
+    animation: fadeUp 0.5s var(--ease);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 20px 24px;
+    border-radius: var(--radius);
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.results-header.real-bg {
+    background: var(--green-dim);
+    border: 1px solid rgba(52, 211, 153, 0.15);
+}
+
+.results-header.fake-bg {
+    background: var(--red-dim);
+    border: 1px solid rgba(244, 63, 94, 0.15);
+}
+
+.verdict-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.verdict-label {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.verdict-label.real {
+    color: var(--green);
+}
+
+.verdict-label.fake {
+    color: var(--red);
+}
+
+.confidence-value {
+    font-family: var(--mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    padding: 18px 16px;
+}
+
+.stat-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-2);
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-0);
+}
+
+.probability-section {
+    margin-top: 24px;
+    padding: 20px;
+}
+
+.prob-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.prob-label-item {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.prob-label-item.real {
+    color: var(--green);
+}
+
+.prob-label-item.fake {
+    color: var(--red);
+}
+
+.prob-bar {
+    height: 10px;
+    border-radius: var(--radius-full);
+    background: var(--bg-0);
+    overflow: hidden;
+}
+
+.prob-bar .fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 1.2s var(--ease);
+}
+
+.prob-bar .fill.real {
+    background: var(--green);
+}
+
+.prob-bar .fill.fake {
+    background: var(--red);
+}
+
+.prob-percentage {
+    text-align: center;
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Frame-Level Analysis Section
+   ═══════════════════════════════════════════════════════════ */
+
+.frame-analysis-section {
+    margin-top: 28px;
+    padding: 24px;
+}
+
+.frame-analysis-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.frame-counter {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-2);
+    letter-spacing: 0.5px;
+}
+
+/* Viewer layout */
+.frame-viewer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.frame-display {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--bg-0);
+}
+
+.frame-display-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.frame-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-weight: 700;
+}
+
+.frame-badge.real {
+    background: rgba(52, 211, 153, 0.15);
+    color: var(--green);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.frame-badge.fake {
+    background: rgba(244, 63, 94, 0.15);
+    color: var(--red);
+    border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.frame-info-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+}
+
+.frame-prob-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.frame-prob-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-2);
+}
+
+.frame-prob-value {
+    font-family: var(--mono);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-0);
+}
+
+.frame-prob-bar {
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--bg-0);
+    overflow: hidden;
+}
+
+.frame-prob-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.3s var(--ease), background 0.3s;
+    width: 0%;
+}
+
+.frame-prob-fill.low {
+    background: var(--green);
+}
+
+.frame-prob-fill.mid {
+    background: #EAB308;
+}
+
+.frame-prob-fill.high {
+    background: var(--red);
+}
+
+.frame-verdict {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.frame-verdict.real {
+    color: var(--green);
+}
+
+.frame-verdict.fake {
+    color: var(--red);
+}
+
+/* Slider */
+.frame-slider-area {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.frame-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--bg-3);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+.frame-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg-0);
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.frame-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.25);
+}
+
+.frame-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg-0);
+    cursor: pointer;
+}
+
+/* Minimap — per-frame risk bars */
+.frame-minimap {
+    display: flex;
+    gap: 2px;
+    height: 24px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.minimap-bar {
+    flex: 1;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    min-width: 0;
+    position: relative;
+}
+
+.minimap-bar:hover {
+    opacity: 0.7;
+}
+
+.minimap-bar.active {
+    outline: 1.5px solid #fff;
+    outline-offset: -1px;
+    z-index: 1;
+}
+
+.minimap-bar.low {
+    background: var(--green);
+}
+
+.minimap-bar.mid {
+    background: #EAB308;
+}
+
+.minimap-bar.high {
+    background: var(--red);
+}
+
+/* ── Grad-CAM Gallery ────────────────────────────────────── */
+.gradcam-section {
+    margin-top: 28px;
+}
+
+.gradcam-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    color: var(--text-1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.gradcam-title-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.gradcam-track {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 8px 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bg-3) transparent;
+}
+
+.gradcam-frame {
+    flex-shrink: 0;
+    width: 200px;
+    height: 200px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--speed) var(--ease);
+    position: relative;
+}
+
+.gradcam-frame:hover {
+    border-color: var(--accent-border);
+    transform: scale(1.02);
+}
+
+.gradcam-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.gradcam-frame-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 5px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.65);
+    letter-spacing: 0.5px;
+}
+
+/* ── Lightbox ────────────────────────────────────────────── */
+.lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox img {
+    max-width: 88vw;
+    max-height: 82vh;
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--text-1);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--speed);
+}
+
+.lightbox-close:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.new-scan-section {
+    text-align: center;
+    margin-top: 32px;
+    padding-bottom: 40px;
+}
+
+/* ── Error ────────────────────────────────────────────────── */
+.error-banner {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    margin-top: 16px;
+    border: 1px solid rgba(244, 63, 94, 0.2);
+    border-radius: var(--radius-sm);
+    background: var(--red-dim);
+    color: var(--red);
+    font-size: 0.82rem;
+}
+
+.error-banner.visible {
+    display: flex;
+}
+
+.error-banner-text {
+    flex: 1;
+}
+
+.error-banner-close {
+    background: none;
+    border: none;
+    color: var(--red);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 4px;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 720px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .upload-zone {
+        padding: 36px 20px;
+    }
+
+    .frame-viewer {
+        grid-template-columns: 1fr;
+    }
+
+    .gradcam-frame {
+        width: 160px;
+        height: 160px;
+    }
+}
+
+@media (max-width: 480px) {
+    .topbar {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .verdict-label {
+        font-size: 1.2rem;
+    }
+}

@@ -1,0 +1,567 @@
+/*  ═══════════════════════════════════════════════════════════
+    NOXIS — Design System v2.0
+    Professional forensics-grade interface
+    ═══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+/* ── Tokens ──────────────────────────────────────────────── */
+:root {
+    --bg-0: #08080C;
+    --bg-1: #0E0E14;
+    --bg-2: #15151E;
+    --bg-3: #1C1C28;
+    --bg-surface: rgba(20, 20, 30, 0.65);
+
+    --accent: #8B5CF6;
+    --accent-dim: #7C3AED;
+    --accent-muted: rgba(139, 92, 246, 0.12);
+    --accent-border: rgba(139, 92, 246, 0.20);
+    --accent-glow: rgba(139, 92, 246, 0.08);
+
+    --text-0: #F0F0F5;
+    --text-1: #C0C0CC;
+    --text-2: #70708A;
+    --text-3: #45455A;
+
+    --green: #34D399;
+    --green-dim: rgba(52, 211, 153, 0.12);
+    --red: #F43F5E;
+    --red-dim: rgba(244, 63, 94, 0.12);
+    --amber: #FBBF24;
+
+    --border: rgba(255, 255, 255, 0.06);
+    --border-accent: rgba(139, 92, 246, 0.25);
+
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --radius-full: 9999px;
+
+    --sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', 'Menlo', monospace;
+
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --speed: 0.2s;
+}
+
+/* ── Reset ───────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 15px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: var(--sans);
+    background: var(--bg-0);
+    color: var(--text-0);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CYBERPUNK BACKGROUND SYSTEM
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Perspective neon grid ───────────────────────────────── */
+.grid-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background:
+        /* Horizontal grid lines */
+        repeating-linear-gradient(0deg,
+            transparent,
+            transparent 59px,
+            rgba(139, 92, 246, 0.04) 59px,
+            rgba(139, 92, 246, 0.04) 60px),
+        /* Vertical grid lines */
+        repeating-linear-gradient(90deg,
+            transparent,
+            transparent 59px,
+            rgba(139, 92, 246, 0.04) 59px,
+            rgba(139, 92, 246, 0.04) 60px);
+    background-size: 60px 60px;
+    animation: gridPulse 4s ease-in-out infinite alternate;
+}
+
+/* Neon perspective overlay on the grid */
+.grid-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        /* Radial glow from center-bottom */
+        radial-gradient(ellipse 120% 60% at 50% 110%, rgba(139, 92, 246, 0.08) 0%, transparent 70%),
+        /* Top vignette */
+        linear-gradient(180deg, rgba(8, 8, 12, 0.6) 0%, transparent 40%, transparent 70%, rgba(8, 8, 12, 0.5) 100%);
+    pointer-events: none;
+}
+
+/* Moving vertical highlight on the grid */
+.grid-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -30%;
+    width: 20%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(139, 92, 246, 0.03) 40%,
+            rgba(139, 92, 246, 0.06) 50%,
+            rgba(139, 92, 246, 0.03) 60%,
+            transparent 100%);
+    animation: gridSweepH 8s linear infinite;
+}
+
+@keyframes gridPulse {
+    0% {
+        opacity: 0.7;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes gridSweepH {
+    0% {
+        left: -30%;
+    }
+
+    100% {
+        left: 110%;
+    }
+}
+
+/* ── CRT scanlines + glitch flicker ──────────────────────── */
+.scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    /* Fine CRT scanlines */
+    background: repeating-linear-gradient(0deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(0, 0, 0, 0.08) 2px,
+            rgba(0, 0, 0, 0.08) 4px);
+    animation: scanFlicker 0.08s steps(2) infinite;
+}
+
+/* Primary sweep line */
+.scanlines::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(139, 92, 246, 0.0) 10%,
+            rgba(139, 92, 246, 0.20) 30%,
+            rgba(139, 92, 246, 0.35) 50%,
+            rgba(139, 92, 246, 0.20) 70%,
+            rgba(139, 92, 246, 0.0) 90%,
+            transparent 100%);
+    box-shadow: 0 0 12px 2px rgba(139, 92, 246, 0.10);
+    animation: sweep 5s linear infinite;
+}
+
+/* Secondary dimmer counter-sweep */
+.scanlines::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg,
+            transparent 15%,
+            rgba(139, 92, 246, 0.06) 50%,
+            transparent 85%);
+    animation: sweep 3.5s linear infinite reverse;
+}
+
+@keyframes sweep {
+    from {
+        top: -4px;
+    }
+
+    to {
+        top: 100%;
+    }
+}
+
+@keyframes scanFlicker {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.97;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* ── Cyberpunk canvas (particle system) ──────────────────── */
+#cyberCanvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ── Floating neon hex bokeh ─────────────────────────────── */
+.cyber-particles {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.cyber-particles .hex {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(139, 92, 246, 0.15);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    animation: hexFloat linear infinite;
+    opacity: 0;
+}
+
+@keyframes hexFloat {
+    0% {
+        transform: translateY(110vh) rotate(0deg) scale(0.5);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-10vh) rotate(180deg) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* ── Horizontal neon pulse streaks ───────────────────────── */
+.cyber-lines {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.cyber-lines .streak {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.25), transparent);
+    animation: streakMove linear infinite;
+    opacity: 0;
+}
+
+@keyframes streakMove {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    95% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(100vw);
+        opacity: 0;
+    }
+}
+
+/* ── Central radial glow ─────────────────────────────────── */
+.cyber-glow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 800px;
+    height: 800px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.04) 0%, transparent 60%);
+    z-index: 0;
+    pointer-events: none;
+    animation: glowPulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+    0% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+/* ── Corner accent brackets ──────────────────────────────── */
+.cyber-corners {
+    position: fixed;
+    inset: 16px;
+    z-index: 1;
+    pointer-events: none;
+    border: 1px solid transparent;
+}
+
+.cyber-corners::before,
+.cyber-corners::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-color: rgba(139, 92, 246, 0.15);
+    border-style: solid;
+}
+
+.cyber-corners::before {
+    top: 0;
+    left: 0;
+    border-width: 1px 0 0 1px;
+}
+
+.cyber-corners::after {
+    bottom: 0;
+    right: 0;
+    border-width: 0 1px 1px 0;
+}
+
+/* ── Glass panel ─────────────────────────────────────────── */
+.glass {
+    background: var(--bg-surface);
+    backdrop-filter: blur(24px) saturate(130%);
+    -webkit-backdrop-filter: blur(24px) saturate(130%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+/* ── Primary button ──────────────────────────────────────── */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 36px;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--speed) var(--ease);
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background: var(--accent-dim);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+    text-decoration: none;
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 28px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-1);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--speed) var(--ease);
+}
+
+.btn-ghost:hover {
+    border-color: var(--accent-border);
+    color: var(--text-0);
+    background: var(--accent-glow);
+}
+
+/* ── Badge ───────────────────────────────────────────────── */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border-radius: var(--radius-full);
+    border: 1px solid;
+}
+
+.badge-real {
+    color: var(--green);
+    border-color: var(--green);
+    background: var(--green-dim);
+}
+
+.badge-fake {
+    color: var(--red);
+    border-color: var(--red);
+    background: var(--red-dim);
+}
+
+.badge-neutral {
+    color: var(--text-2);
+    border-color: var(--border);
+    background: transparent;
+}
+
+/* ── Scanner loader ──────────────────────────────────────── */
+.scanner-loader {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    position: relative;
+    display: none;
+    margin: 0 auto;
+}
+
+.scanner-loader.active {
+    display: block;
+}
+
+.scanner-loader .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1.5px solid transparent;
+}
+
+.scanner-loader .ring:nth-child(1) {
+    border-top-color: var(--accent);
+    animation: spin 1s linear infinite;
+}
+
+.scanner-loader .ring:nth-child(2) {
+    inset: 6px;
+    border-right-color: var(--accent-dim);
+    animation: spin 1.6s linear infinite reverse;
+}
+
+.scanner-loader .ring:nth-child(3) {
+    inset: 12px;
+    border-bottom-color: rgba(139, 92, 246, 0.4);
+    animation: spin 2.2s linear infinite;
+}
+
+.scanner-loader .core {
+    position: absolute;
+    inset: 18px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* ── Layout helpers ──────────────────────────────────────── */
+.container {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 2;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bg-3);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-dim);
+}

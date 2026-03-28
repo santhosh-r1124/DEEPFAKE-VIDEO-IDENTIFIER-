@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NOXIS — Deepfake Detection & Forensic Analysis Engine">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/complaint.css">
+    <style>
+        .landing {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            padding: 40px 24px;
+            gap: 0;
+        }
+
+        /* ── Logo ──────────────────────────────────────── */
+        .logo-area {
+            margin-bottom: 36px;
+            position: relative;
+        }
+
+        .logo-img {
+            width: 96px;
+            height: 96px;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 1.5px solid var(--accent-border);
+            background: var(--bg-2);
+            padding: 2px;
+        }
+
+        /* ── Brand ─────────────────────────────────────── */
+        .brand {
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            font-weight: 900;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            color: var(--text-0);
+            line-height: 1;
+        }
+
+        .tagline {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            color: var(--text-2);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 12px;
+        }
+
+        .desc {
+            max-width: 480px;
+            color: var(--text-2);
+            font-size: 0.92rem;
+            line-height: 1.7;
+            margin-top: 20px;
+        }
+
+        /* ── Chips ─────────────────────────────────────── */
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 28px;
+        }
+
+        .chip {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            color: var(--text-2);
+            background: var(--bg-2);
+        }
+
+        .cta {
+            margin-top: 44px;
+        }
+
+        /* ── Footer ────────────────────────────────────── */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 14px;
+            text-align: center;
+            font-family: var(--mono);
+            font-size: 0.62rem;
+            color: var(--text-3);
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid-bg"></div>
+    <div class="scanlines"></div>
+
+    <main class="landing">
+        <div class="logo-area">
+            <img src="logo.png" alt="NOXIS" class="logo-img" onerror="this.src='logo.jpg'">
+        </div>
+
+        <h1 class="brand">NOXIS</h1>
+        <p class="tagline">Deepfake Forensics Engine</p>
+
+        <p class="desc">
+            Forensic-grade deepfake detection powered by EfficientNet-B3
+            temporal analysis with explainable Grad-CAM evidence mapping.
+        </p>
+
+        <div class="chips">
+            <span class="chip">EfficientNet-B3</span>
+            <span class="chip">BiLSTM</span>
+            <span class="chip">Grad-CAM</span>
+            <span class="chip">Celeb-DF v2</span>
+        </div>
+
+        <div class="cta">
+            <a href="detect.html" class="btn-primary" id="launchBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                Launch Detection
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        NOXIS v1.0 &mdash; Forensic Analysis System
+    </footer>
+
+    <!-- Complaint FAB -->
+    <button class="complaint-fab" id="complaintFab" title="Report Issue or Threat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+    </button>
+
+    <!-- Complaint Modal -->
+    <div class="complaint-modal-overlay" id="complaintModal">
+        <div class="complaint-modal glass">
+            <button class="complaint-close" id="complaintClose">&times;</button>
+            <h2 class="complaint-title">Report an Issue or Threat</h2>
+            <div class="complaint-contact-info">
+                Facing an issue on the website?<br>
+                Feel free to contact: <a href="mailto:santhosh.r2k4@gmail.com">santhosh.r2k4@gmail.com</a>
+            </div>
+
+            <p class="complaint-desc">
+                If you are facing threats by an anonymous source using your face, please raise a complaint below.
+                Upload the video evidence and a screenshot of the chat threatening you.
+            </p>
+
+            <form id="complaintForm" class="complaint-form">
+                <div class="form-group">
+                    <label>Complaint Details</label>
+                    <textarea rows="4" placeholder="Describe the threat or issue in detail..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Threatening Video Attachment (evidence)</label>
+                    <input type="file" accept="video/*" required>
+                </div>
+                <div class="form-group">
+                    <label>Screenshot of Threatening Chat</label>
+                    <input type="file" accept="image/*" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Submit Complaint</button>
+            </form>
+            <div id="complaintSuccess"
+                style="display:none; color: var(--green); margin-top: 15px; text-align: center; font-weight: bold;">
+                Complaint successfully registered. We will look into it.
+            </div>
+        </div>
+    </div>
+
+    <script src="js/cyberpunk.js"></script>
+    <script src="js/complaint.js"></script>
+    <script>
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                var btn = document.getElementById('launchBtn');
+                if (btn) btn.click();
+            }
+        });
+    </script>
+</body>
+
+</html>

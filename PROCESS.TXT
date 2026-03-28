@@ -1,0 +1,37 @@
+NOXIS Deepfake Identifier - CNN Processes and Architectures Used
+
+This document details each and every Convolutional Neural Network (CNN) architecture and process used within the Deepfake Identifier project.
+
+1. NOXIS v2 Main Detector (DeepfakeDetector) - `backend/model/network.py`
+   - Spatial Branch (CNN): Uses a pretrained EfficientNet-B3 backbone. It yields 1536-dimensional features per frame.
+     - Process: The early layers (stem, bn0, and all blocks except the last 4) are frozen to retain foundational feature extraction capabilities without modifying earlier weights.
+     - Optimization: Processing is done in chunks (e.g., 8 frames at a time) to ensure safe execution on 4GB VRAM GPUs.
+   - Frequency Branch (CNN): Includes a custom FFT Feature Extractor that processes Fast Fourier Transform (FFT) magnitude images through lightweight convolutional layers to output 256-dimensional frequency features per frame.
+   - Temporal Branch: Spatial and frequency features are fused (1792 dimensions) and passed into a Bidirectional LSTM (BiLSTM) with 2 layers and 256 hidden units to model temporal dynamics across frames.
+   - Output: Generates both per-frame logits (with Grad-CAM support via the last convolutional head of the backbone) and an overall video-level prediction.
+
+2. EfficientNet-B3 + BiLSTM Baseline (EfficientNetLSTMDetector) - `models/efficientnet_lstm.py`
+   - Spatial Backbone: Pretrained EfficientNet-B3 (frozen stem and early blocks, identical to the main detector).
+   - Process: Extracts 1536-dimensional features for every frame.
+   - Temporal Aggregation: Uses a BiLSTM (2 layers, hidden size 256) instead of average pooling to understand temporal sequencing before classification.
+
+3. EfficientNet-B3 Baseline (EfficientNetB3Detector) - `models/efficientnet_b3.py`
+   - Spatial Backbone: Pretrained EfficientNet-B3 with early layers frozen to prevent over-adjusting early feature maps.
+   - Process: Extracts features from all input frames individually.
+   - Temporal Aggregation: Employs a simple temporal average pooling (averaging the spatial features across the time dimension) before feeding into a final linear classifier.
+
+4. EfficientNet-B0 Baseline (EfficientNetB0Detector) - `models/efficientnet_b0.py`
+   - Spatial Backbone: Pretrained EfficientNet-B0 as a lightweight alternative.
+   - Process: Freezes the stem, bn0, and all blocks except the final 3 blocks.
+   - Temporal Aggregation: Uses temporal average pooling across frames before classification.
+
+5. ResNet50 Baseline (ResNet50Detector) - `models/resnet.py`
+   - Spatial Backbone: Pretrained ResNet50 (IMAGENET1K_V2 weights).
+   - Process: Freezes the earliest foundational layers (`conv1`, `bn1`, `layer1`, and `layer2`) to retain generic ImageNet features.
+   - Temporal Aggregation: Performs temporal average pooling over the extracted frame features before passing them to the dropout and classification layers.
+
+6. MobileNetV3-Large Baseline (MobileNetV3Detector) - `models/mobilenet.py`
+   - Spatial Backbone: Pretrained MobileNetV3-Large for ultra-lightweight execution.
+   - Process: Freezes the first 10 (out of 16) inverted residual blocks.
+   - Classifier Block: Retains the MobileNet projection layers.
+   - Temporal Aggregation: Average pooling across the temporal dimension before mapping to the final dense classification layer.

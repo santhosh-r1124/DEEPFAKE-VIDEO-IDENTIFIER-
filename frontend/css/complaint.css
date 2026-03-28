@@ -1,0 +1,157 @@
+/* ── Complaint FAB & Modal ───────────────────────────────── */
+.complaint-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 16px rgba(244, 63, 94, 0.4);
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--speed) var(--ease);
+}
+
+.complaint-fab:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 8px 24px rgba(244, 63, 94, 0.6);
+    background: #e11d48;
+}
+
+.complaint-fab svg {
+    width: 28px;
+    height: 28px;
+}
+
+.complaint-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 8, 12, 0.85);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--speed) var(--ease);
+    backdrop-filter: blur(8px);
+}
+
+.complaint-modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.complaint-modal {
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform var(--speed) var(--ease);
+    border-color: var(--red-dim);
+}
+
+.complaint-modal-overlay.active .complaint-modal {
+    transform: translateY(0);
+}
+
+.complaint-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-2);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.complaint-close:hover {
+    color: var(--text-0);
+}
+
+.complaint-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-0);
+    margin-bottom: 12px;
+    border-left: 4px solid var(--red);
+    padding-left: 10px;
+}
+
+.complaint-contact-info {
+    font-size: 0.9rem;
+    color: var(--text-1);
+    background: var(--bg-1);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 15px;
+    border: 1px dashed var(--border);
+}
+
+.complaint-contact-info a {
+    color: var(--red);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.complaint-desc {
+    font-size: 0.85rem;
+    color: var(--text-2);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.complaint-form .form-group {
+    margin-bottom: 15px;
+}
+
+.complaint-form label {
+    display: block;
+    font-size: 0.8rem;
+    font-family: var(--mono);
+    color: var(--text-1);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.complaint-form input[type="file"],
+.complaint-form textarea {
+    width: 100%;
+    padding: 10px;
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-0);
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+}
+
+.complaint-form textarea {
+    resize: vertical;
+}
+
+.complaint-form input:focus,
+.complaint-form textarea:focus {
+    outline: none;
+    border-color: var(--red);
+}
+
+.complaint-form button {
+    background: var(--red);
+}
+
+.complaint-form button:hover {
+    background: #e11d48;
+    box-shadow: 0 8px 24px rgba(244, 63, 94, 0.25);
+}
